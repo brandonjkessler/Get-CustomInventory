@@ -88,6 +88,11 @@ Keys from previous script:
 "Phone"
 
 #>
+$RegRoot = 'HKLM:\SOFTWARE\'
+$RegKeyPath = "$RegRoot\CustomInv"
+if(!(Test-Path -Path $RegKeyPath)){
+    New-Item -Path "$RegRoot" -Name 'CustomInv'
+}
 
 ###### MONITOR #######
 ## http://jeffwouters.nl/index.php/2016/11/powershell-find-the-manufacturer-model-and-serial-for-your-monitors/
