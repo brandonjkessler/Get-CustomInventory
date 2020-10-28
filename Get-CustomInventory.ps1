@@ -81,3 +81,15 @@ Keys from previous script:
 "Phone"
 
 #>
+
+###### MONITOR #######
+## http://jeffwouters.nl/index.php/2016/11/powershell-find-the-manufacturer-model-and-serial-for-your-monitors/
+$Monitor = Get-CimInstance -Namespace root\wmi -ClassName wmimonitorid 
+
+$Monitor | ForEach-Object {
+	New-Object -TypeName psobject -Property @{
+        Manufacturer = ($_.ManufacturerName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
+        Name = ($_.UserFriendlyName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
+        Serial = ($_.SerialNumberID -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
+    }
+}
