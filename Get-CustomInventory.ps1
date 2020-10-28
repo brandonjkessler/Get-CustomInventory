@@ -84,12 +84,20 @@ Keys from previous script:
 
 ###### MONITOR #######
 ## http://jeffwouters.nl/index.php/2016/11/powershell-find-the-manufacturer-model-and-serial-for-your-monitors/
-$Monitor = Get-CimInstance -Namespace root\wmi -ClassName wmimonitorid 
+$GetMonitor = Get-CimInstance -Namespace root\wmi -ClassName wmimonitorid 
+$MonArray = @()
 
-$Monitor | ForEach-Object {
+$GetMonitor | ForEach-Object {
 	New-Object -TypeName psobject -Property @{
         Manufacturer = ($_.ManufacturerName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
         Name = ($_.UserFriendlyName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
         Serial = ($_.SerialNumberID -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
-    }
+    } | Where-Object {$_.Serial -ne 0} | ForEach-Object{$MonArray += $_}
+}
+
+#Testing
+if($MonArray.Length -gt 1){
+    Write-Output 'MOAR MONITORS!'
+} else {
+    Write-Output 'THERE CAN BE ONLY ONE!'
 }
