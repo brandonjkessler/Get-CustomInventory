@@ -22,31 +22,14 @@
 
 ## TO DO ##
 ## Get The Following:
-## Computer Name (Display to EU)
-$env:COMPUTERNAME
-## Computer Serial Number (Display to EU)
-(Get-ComputerInfo).BiosSeralNumber
-## All connected Monitor Serial Numbers
+
 ## Dock Serial Number
-## Asset Tag (for Expiration of Lease or Purchased)
 ## Asset Family (Chassis Type)
-## Manufacturer (Display to EU)
-## Computer Model (Display to EU)
-## Processor
-## RAM
 ## SSD size
 ## Bitlocker Enabled
-## OS (Display to EU)
-(Get-ComputerInfo).OsName
-## Build Version (Display to EU)
-(Get-ComputerInfo).OsVersion #10.0.19042
-(Get-ComputerInfo).WindowsVersion #2009, 1909
 ## Install Date (Display to EU)
 ## Warranty Date (Display to EU)
-(Get-CimInstance -ClassName Win32_SystemEnclosure).SMBIOSAssetTag
 ## MAC Address (Display to EU)
-## Domain (Display to EU)
-(Get-ComputerInfo).CsDomain 
 ## Asset Status (Display to EU)
 ## Schedule Number (For Leased Assets)
 
@@ -108,3 +91,31 @@ if($MonArray.Length -gt 1){
 } else {
     Write-Output 'THERE CAN BE ONLY ONE!'
 }
+
+###### Computer Name ######
+$CompName = $env:COMPUTERNAME
+
+###### Computer Serial Number ######
+$CompSN = (Get-ComputerInfo).BiosSeralNumber
+
+###### Computer Manufacturer/Model ######
+$CompManu = (Get-ComputerInfo).CsManufacturer
+$CompMod = (Get-ComputerInfo).CsModel
+
+###### Computer Processor ######
+$CompProcessor = (Get-ComputerInfo).CsProcessors
+
+###### Computer RAM #######
+$CompRAM = (((Get-ComputerInfo).OsTotalVisibleMemorySize)/1024)/1024
+
+###### OS Name ######
+$OSName = (Get-ComputerInfo).OsName
+
+###### OS Build Version ######
+$OSBuild = (Get-ComputerInfo).WindowsVersion #2009, 1909
+
+###### Asset Tag ######
+$AssetTag = (Get-CimInstance -ClassName Win32_SystemEnclosure).SMBIOSAssetTag
+
+###### Domain ######
+$DomainName = (Get-ComputerInfo).CsDomain 
