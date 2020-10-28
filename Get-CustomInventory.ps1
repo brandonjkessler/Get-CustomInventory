@@ -71,7 +71,9 @@ Keys from previous script:
 #>
 
 ###### MONITOR #######
-## http://jeffwouters.nl/index.php/2016/11/powershell-find-the-manufacturer-model-and-serial-for-your-monitors/
+## influenced by http://jeffwouters.nl/index.php/2016/11/powershell-find-the-manufacturer-model-and-serial-for-your-monitors/
+
+
 $GetMonitor = Get-CimInstance -Namespace root\wmi -ClassName wmimonitorid 
 $MonArray = @()
 
@@ -83,11 +85,16 @@ $GetMonitor | ForEach-Object {
     } | Where-Object {$_.Serial -ne 0} | ForEach-Object{$MonArray += $_}
 }
 
-#Testing
-if($MonArray.Length -gt 1){
-    Write-Output 'MOAR MONITORS!'
-} else {
-    Write-Output 'THERE CAN BE ONLY ONE!'
+$MonArray | ForEach-Object{
+    if($MonArray.Length -lt 1){ # Test if monitors attached
+        Write-Output 'NO MONITORS!'
+    } else {
+        if(!(Get-ItemProperty -Path $RegKeyPath -Name "$('Monitor' + $($MonArray.IndexOf($_) + 1))")){ # Test Monitor Reg Path. Using Array index to set how many monitors connected.
+            New-ItemProperty -Path $RegKeyPath -PropertyType 'String' -Name "$('Monitor' + $($MonArray.Indexof($_) + 1))" -Value "$($_.Serial)" # Create Property
+        } else {
+            Set-ItemProperty -Path $RegKeyPath -Name "$('Monitor' + $($MonArray.Indexof($_) + 1))" -Value "$($_.Serial)" # If property exists, set it
+        }
+    }
 }
 
 ###### Computer Name ######
@@ -126,3 +133,4 @@ $SSDSize = ((Get-Disk -Number 0).Size)/1024/1024/1024
 
 ###### Current User ######
 $CurrentUser = $env:USERNAME
+
