@@ -23,7 +23,9 @@
 ## TO DO ##
 ## Get The Following:
 ## Computer Name (Display to EU)
+$env:COMPUTERNAME
 ## Computer Serial Number (Display to EU)
+(Get-ComputerInfo).BiosSeralNumber
 ## All connected Monitor Serial Numbers
 ## Dock Serial Number
 ## Asset Tag (for Expiration of Lease or Purchased)
@@ -35,11 +37,16 @@
 ## SSD size
 ## Bitlocker Enabled
 ## OS (Display to EU)
+(Get-ComputerInfo).OsName
 ## Build Version (Display to EU)
+(Get-ComputerInfo).OsVersion #10.0.19042
+(Get-ComputerInfo).WindowsVersion #2009, 1909
 ## Install Date (Display to EU)
 ## Warranty Date (Display to EU)
+(Get-CimInstance -ClassName Win32_SystemEnclosure).SMBIOSAssetTag
 ## MAC Address (Display to EU)
 ## Domain (Display to EU)
+(Get-ComputerInfo).CsDomain 
 ## Asset Status (Display to EU)
 ## Schedule Number (For Leased Assets)
 
