@@ -4,7 +4,7 @@
 ## Import CSV with Department IDs
 
 ## TO DO ##
-## Get The Follwing:
+## Get The Following:
 ## Currently Logged on User's info from AD. If unable to, get from User as input
 ## Phone Number from User input
 ## Address
@@ -25,8 +25,6 @@
 
 ## Dock Serial Number
 ## Asset Family (Chassis Type)
-## SSD size
-## Bitlocker Enabled
 ## Install Date (Display to EU)
 ## Warranty Date (Display to EU)
 ## MAC Address (Display to EU)
@@ -119,3 +117,12 @@ $AssetTag = (Get-CimInstance -ClassName Win32_SystemEnclosure).SMBIOSAssetTag
 
 ###### Domain ######
 $DomainName = (Get-ComputerInfo).CsDomain 
+
+###### Bitlocker Protection Status (ON/OFF) ######
+$BitlockerStatus = (Get-BitLockerVolume -MountPoint C:).ProtectionStatus
+
+###### SSD Size ######
+$SSDSize = ((Get-Disk -Number 0).Size)/1024/1024/1024
+
+###### Current User ######
+$CurrentUser = $env:USERNAME
