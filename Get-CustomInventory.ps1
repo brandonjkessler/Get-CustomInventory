@@ -134,7 +134,7 @@ Set-ItemProperty -Path $RegKeyPath -Name "HDDSizeFormatted" -Value "$SSDSizeForm
 ###### NETWORK INTERFACES #######
 [Array]$wifiNetArray = @()
 [Array]$nicNetArray = @()
-$CIMNetAdapters = Get-CimInstance -ClassName CIM_NetworkAdapter | Where-Object{`
+$CIMNetAdapters = Get-CimInstance -ClassName CIM_NetworkAdapter | Where-Object{` # Get the network adapters and then get rid of extra stuff
     ($_.name -notlike "*bluetooth*") -and `
     ($_.name -notlike "*microsoft*") -and `
     ($_.name -notlike "*broadband*") -and `
@@ -143,13 +143,20 @@ $CIMNetAdapters = Get-CimInstance -ClassName CIM_NetworkAdapter | Where-Object{`
     ($_.name -notlike "*usb*") -and `
     ($_.name -notlike "*wan*")}
 
-$CIMNetAdapters | ForEach-Object{
+$CIMNetAdapters | ForEach-Object{ ## Assign NICs to correct location
     if(($_.Name -match 'wi-fi') -or ($_.Name -match 'wireless')){
         $wifiNetArray += $_
     } elseif ($_.Name -match 'ethernet'){
         $nicNetArray += $_
     }
 }
+
+$nics = ''
+$CIMNetAdapters | ForEach-Object { ## Get the detected NIC names and put them in their own reg key
+    $nics += "$($_.Name)" + '; '
+}
+
+Set-ItemProperty -Path $RegKeyPath -Name "NetworkCard" -Value "$nics"
 
 $wifiNetArray | ForEach-Object{
     if($wifiNetArray.Length -lt 1){ # Test if Wifi Detected
