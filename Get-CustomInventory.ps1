@@ -70,11 +70,16 @@ Keys from previous script:
 
 #>
 
+###### VARIABLE DECLARATION #######
+$WarrantyEndDate = ''
+$RegKey = 'CustomInv'
+$RegKeyPath = "HKLM:\SOFTWARE\$RegKey"
+
+
 ###### MONITOR #######
 ## influenced by http://jeffwouters.nl/index.php/2016/11/powershell-find-the-manufacturer-model-and-serial-for-your-monitors/
 
-$RegKey = 'CustomInv'
-$RegKeyPath = "HKLM:\SOFTWARE\$RegKey"
+
 
 $GetMonitor = Get-CimInstance -Namespace root\wmi -ClassName wmimonitorid 
 $MonArray = @()
@@ -100,7 +105,7 @@ $CompName = $env:COMPUTERNAME
 Set-ItemProperty -Path $RegKeyPath -Name "ComputerName" -Value "$CompName"
 
 ###### Computer Serial Number ######
-$CompSN = (Get-ComputerInfo).BiosSeralNumber
+$CompSN = (Get-ComputerInfo).BiosSerialNumber
 
 ###### Computer Manufacturer/Model ######
 $CompManu = (Get-ComputerInfo).CsManufacturer
@@ -120,6 +125,14 @@ $OSBuild = (Get-ComputerInfo).WindowsVersion #2009, 1909
 
 ###### Asset Tag ######
 $AssetTag = (Get-CimInstance -ClassName Win32_SystemEnclosure).SMBIOSAssetTag
+if($AssetTag -match "20[0-9][0-9]-[0-1][0-9]"){ # Check to see if asset tag is set to lease or expiration date
+    $WarrantyEndDate = $AssetTag
+} elseif($AssetTag -match "purchased") {
+    ## TO DO ##
+    ## Get Warranty Date from APIs ##
+} elseif($AssetTag -match "unsupported") {
+    $WarrantyEndDate = $AssetTag
+}
 
 ###### Domain ######
 $DomainName = (Get-ComputerInfo).CsDomain 
@@ -132,4 +145,11 @@ $SSDSize = ((Get-Disk -Number 0).Size)/1024/1024/1024
 
 ###### Current User ######
 $CurrentUser = $env:USERNAME
+
+###### WARRANTY END DATE ########
+if(($WarrantyEndDate -ne $null) -or ($WarrantyEndDate -ne '')){
+    Set-ItemProperty -Path $RegKeyPath -Name "WarrantyEndDate" -Value "$WarrantyEndDate"
+} else {
+    Set-ItemProperty -Path $RegKeyPath -Name "WarrantyEndDate" -Value "Unknown"
+}
 
