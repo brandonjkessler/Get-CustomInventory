@@ -38,9 +38,7 @@ $CompInfo = Get-ComputerInfo
 ## Get The Following:
 
 ## Dock Serial Number
-## Asset Family (Chassis Type)
 ## Install Date (Display to EU)
-## Warranty Date (Display to EU)
 ## Asset Status (Display to EU)
 ## Schedule Number (For Leased Assets)
 
@@ -54,7 +52,6 @@ $CompInfo = Get-ComputerInfo
 <#
 Keys from previous script:
 
-"AssetFamily"
 "ManufacturerTag"
 "InstallDate"
 "LocationCode"
@@ -111,6 +108,11 @@ $CompMod = $CompInfo.CsModel
 
 Set-ItemProperty -Path $RegKeyPath -Name "Manufacturer" -Value "$CompManu"
 Set-ItemProperty -Path $RegKeyPath -Name "Model" -Value "$CompMod"
+
+
+###### ASSET FAMILY ########
+$CompFamily = $CompInfo.CsPCSystemType
+Set-ItemProperty -Path $RegKeyPath -Name "AssetFamily" -Value "$CompFamily"
 
 ###### COMPUTER PROCESSOR ######
 $CompProcessor = ($CompInfo.CsProcessors).Name
