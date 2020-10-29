@@ -73,6 +73,8 @@ Keys from previous script:
 ###### MONITOR #######
 ## influenced by http://jeffwouters.nl/index.php/2016/11/powershell-find-the-manufacturer-model-and-serial-for-your-monitors/
 
+$RegKey = 'CustomInv'
+$RegKeyPath = "HKLM:\SOFTWARE\$RegKey"
 
 $GetMonitor = Get-CimInstance -Namespace root\wmi -ClassName wmimonitorid 
 $MonArray = @()
@@ -89,16 +91,13 @@ $MonArray | ForEach-Object{
     if($MonArray.Length -lt 1){ # Test if monitors attached
         Write-Output 'NO MONITORS!'
     } else {
-        if(!(Get-ItemProperty -Path $RegKeyPath -Name "$('Monitor' + $($MonArray.IndexOf($_) + 1))")){ # Test Monitor Reg Path. Using Array index to set how many monitors connected.
-            New-ItemProperty -Path $RegKeyPath -PropertyType 'String' -Name "$('Monitor' + $($MonArray.Indexof($_) + 1))" -Value "$($_.Serial)" # Create Property
-        } else {
-            Set-ItemProperty -Path $RegKeyPath -Name "$('Monitor' + $($MonArray.Indexof($_) + 1))" -Value "$($_.Serial)" # If property exists, set it
-        }
+        Set-ItemProperty -Path $RegKeyPath -Name "$('Monitor' + $($MonArray.Indexof($_) + 1))" -Value "$($_.Serial)" # Set Property
     }
 }
 
-###### Computer Name ######
+###### COMPUTER NAME ######
 $CompName = $env:COMPUTERNAME
+Set-ItemProperty -Path $RegKeyPath -Name "ComputerName" -Value "$CompName"
 
 ###### Computer Serial Number ######
 $CompSN = (Get-ComputerInfo).BiosSeralNumber
