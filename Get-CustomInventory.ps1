@@ -29,6 +29,7 @@ $CurrentUser = $env:USERNAME
 
 
 ######### HARDWARE ##############
+$CompInfo = Get-ComputerInfo
 
 ## TO DO ##
 ## Get The Following:
@@ -52,18 +53,9 @@ $CurrentUser = $env:USERNAME
 Keys from previous script:
 
 "NetworkCard"
-"ComputerName"
 "AssetFamily"
-"Model"
-"Manufacturer"
-"ProccessorInfo"
-"RAM"
-"HDDSize"
-"SerialNumber"
-"OperatingSystem"
 "ManufacturerTag"
 "InstallDate"
-"WarrantyEndDate"
 "LocationCode"
 "PhysicalAddress"
 "AssignedUser"
@@ -73,7 +65,6 @@ Keys from previous script:
 "Agency"
 "Department"
 "Status"
-"Domain"
 "SDTicket"
 "Revision"
 "Phone"
@@ -109,28 +100,45 @@ $MonArray | ForEach-Object{
 $CompName = $env:COMPUTERNAME
 Set-ItemProperty -Path $RegKeyPath -Name "ComputerName" -Value "$CompName"
 
-###### Computer Serial Number ######
-$CompSN = (Get-ComputerInfo).BiosSerialNumber
+###### COMPUTER SERIAL NUMBER ######
+$CompSN = $CompInfo.BiosSeralNumber
+Set-ItemProperty -Path $RegKeyPath -Name "SerialNumber" -Value "$CompSN"
 
-###### Computer Manufacturer/Model ######
-$CompManu = (Get-ComputerInfo).CsManufacturer
-$CompMod = (Get-ComputerInfo).CsModel
+###### COMPUTER MANUFACTURER/MODEL ######
+$CompManu = $CompInfo.CsManufacturer
+$CompMod = $CompInfo.CsModel
 
-###### Computer Processor ######
-$CompProcessor = (Get-ComputerInfo).CsProcessors
+Set-ItemProperty -Path $RegKeyPath -Name "Manufacturer" -Value "$CompManu"
+Set-ItemProperty -Path $RegKeyPath -Name "Model" -Value "$CompMod"
 
-###### Computer RAM #######
-$CompRAM = (((Get-ComputerInfo).OsTotalVisibleMemorySize)/1024)/1024
+###### COMPUTER PROCESSOR ######
+$CompProcessor = ($CompInfo.CsProcessors).Name
+Set-ItemProperty -Path $RegKeyPath -Name "Processor" -Value "$CompProcessor"
 
-###### OS Name ######
-$OSName = (Get-ComputerInfo).OsName
+###### COMPUTER RAM #######
+$CompRAM = (($CompInfo.OsTotalVisibleMemorySize)/1024)/1024
+$CompRAM = [Math]::Round([Math]::Ceiling($CompRAM))
+Set-ItemProperty -Path $RegKeyPath -Name "RAM" -Value "$CompRAM"
 
-###### OS Build Version ######
-$OSBuild = (Get-ComputerInfo).WindowsVersion #2009, 1909
+###### SSD SIZE ######
+$SSDSize = (Get-Disk -Number 0).Size
+$SSDSizeFormatted = [Math]::Round([Math]::Floor($SSDSize/1024/1024/1024))
+$SSDSize = [Math]::Round([Math]::Floor($SSDSize/1000/1000/1000))
+Set-ItemProperty -Path $RegKeyPath -Name "HDDSize" -Value "$SSDSize"
+Set-ItemProperty -Path $RegKeyPath -Name "HDDSizeFormatted" -Value "$SSDSizeFormatted"
 
-###### Asset Tag ######
+###### OS NAME ######
+$OSName = $CompInfo.OsName
+Set-ItemProperty -Path $RegKeyPath -Name "OperatingSystem" -Value "$OSName"
+
+###### OS BUILD VERSION ######
+$OSBuild = $CompInfo.WindowsVersion #2009, 1909
+Set-ItemProperty -Path $RegKeyPath -Name "BuildVersion" -Value "$OSBuild"
+
+###### ASSET TAG ######
 $AssetTag = (Get-CimInstance -ClassName Win32_SystemEnclosure).SMBIOSAssetTag
-if($AssetTag -match "20[0-9][0-9]-[0-1][0-9]"){ # Check to see if asset tag is set to lease or expiration date
+Set-ItemProperty -Path $RegKeyPath -Name "AssetTag" -Value "$AssetTag"
+if($AssetTag -match "20[0-9][0-9]-[0-1][0-9]"){ # Check to see if asset tag is set to lease or expiration date. YYYY-mm.
     $WarrantyEndDate = $AssetTag
 } elseif($AssetTag -match "purchased") {
     ## TO DO ##
@@ -139,14 +147,12 @@ if($AssetTag -match "20[0-9][0-9]-[0-1][0-9]"){ # Check to see if asset tag is s
     $WarrantyEndDate = $AssetTag
 }
 
-###### Domain ######
-$DomainName = (Get-ComputerInfo).CsDomain 
+###### COMPUTER DOMAIN ######
+$DomainName = $CompInfo.CsDomain 
+Set-ItemProperty -Path $RegKeyPath -Name "Domain" -Value "$DomainName"
 
 ###### Bitlocker Protection Status (ON/OFF) ######
 $BitlockerStatus = (Get-BitLockerVolume -MountPoint C:).ProtectionStatus
-
-###### SSD Size ######
-$SSDSize = ((Get-Disk -Number 0).Size)/1024/1024/1024
 
 ###### WARRANTY END DATE ########
 if(($WarrantyEndDate -ne $null) -or ($WarrantyEndDate -ne '')){
