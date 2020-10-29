@@ -41,7 +41,6 @@ $CompInfo = Get-ComputerInfo
 ## Asset Family (Chassis Type)
 ## Install Date (Display to EU)
 ## Warranty Date (Display to EU)
-## MAC Address (Display to EU)
 ## Asset Status (Display to EU)
 ## Schedule Number (For Leased Assets)
 
@@ -55,7 +54,6 @@ $CompInfo = Get-ComputerInfo
 <#
 Keys from previous script:
 
-"NetworkCard"
 "AssetFamily"
 "ManufacturerTag"
 "InstallDate"
