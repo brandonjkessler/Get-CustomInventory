@@ -1,3 +1,9 @@
+###### VARIABLE DECLARATION #######
+$WarrantyEndDate = ''
+$RegKey = 'CustomInv'
+$RegKeyPath = "HKLM:\SOFTWARE\$RegKey"
+
+
 ########## USER ##############
 ## TO DO ##
 ## Create a way to import CSV with Addresses
@@ -16,6 +22,10 @@
 ## Location
 ## Primary Device or Multi-User from User Input
 ## -If Multi-user machine, don't run on each new logon
+
+
+###### Current User ######
+$CurrentUser = $env:USERNAME
 
 
 ######### HARDWARE ##############
@@ -69,11 +79,6 @@ Keys from previous script:
 "Phone"
 
 #>
-
-###### VARIABLE DECLARATION #######
-$WarrantyEndDate = ''
-$RegKey = 'CustomInv'
-$RegKeyPath = "HKLM:\SOFTWARE\$RegKey"
 
 
 ###### MONITOR #######
@@ -142,9 +147,6 @@ $BitlockerStatus = (Get-BitLockerVolume -MountPoint C:).ProtectionStatus
 
 ###### SSD Size ######
 $SSDSize = ((Get-Disk -Number 0).Size)/1024/1024/1024
-
-###### Current User ######
-$CurrentUser = $env:USERNAME
 
 ###### WARRANTY END DATE ########
 if(($WarrantyEndDate -ne $null) -or ($WarrantyEndDate -ne '')){
