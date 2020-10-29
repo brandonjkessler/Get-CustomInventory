@@ -2,6 +2,9 @@
 $WarrantyEndDate = ''
 $RegKey = 'CustomInv'
 $RegKeyPath = "HKLM:\SOFTWARE\$RegKey"
+if(!(Test-Path -Path "$RegKeyPath")){
+    New-Item -Path "$RegKeyPath"
+}
 
 
 ########## USER ##############
