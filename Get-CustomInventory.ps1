@@ -95,7 +95,7 @@ $MonArray | ForEach-Object{
     if($MonArray.Length -lt 1){ # Test if monitors attached
         Write-Output 'NO MONITORS!'
     } else {
-        Set-ItemProperty -Path $RegKeyPath -Name "$('Monitor' + $($MonArray.Indexof($_) + 1))" -Value "$($_.Serial)" # Set Property
+        Set-ItemProperty -Path $RegKeyPath -Name "$('Monitor' + $($MonArray.Indexof($_) + 1) + 'SN')" -Value "$($_.Serial)" # Set Property
     }
 }
 
@@ -130,13 +130,53 @@ $SSDSize = [Math]::Round([Math]::Floor($SSDSize/1000/1000/1000))
 Set-ItemProperty -Path $RegKeyPath -Name "HDDSize" -Value "$SSDSize"
 Set-ItemProperty -Path $RegKeyPath -Name "HDDSizeFormatted" -Value "$SSDSizeFormatted"
 
+
+###### NETWORK INTERFACES #######
+[Array]$wifiNetArray = @()
+[Array]$nicNetArray = @()
+$CIMNetAdapters = Get-CimInstance -ClassName CIM_NetworkAdapter | Where-Object{`
+    ($_.name -notlike "*bluetooth*") -and `
+    ($_.name -notlike "*microsoft*") -and `
+    ($_.name -notlike "*broadband*") -and `
+    ($_.name -notlike "*snapdragon*") -and `
+    ($_.name -notlike "*cisco*") -and `
+    ($_.name -notlike "*usb*") -and `
+    ($_.name -notlike "*wan*")}
+
+$CIMNetAdapters | ForEach-Object{
+    if(($_.Name -match 'wi-fi') -or ($_.Name -match 'wireless')){
+        $wifiNetArray += $_
+    } elseif ($_.Name -match 'ethernet'){
+        $nicNetArray += $_
+    }
+}
+
+$wifiNetArray | ForEach-Object{
+    if($wifiNetArray.Length -lt 1){ # Test if Wifi Detected
+        Write-Output 'NO WIFI'
+    } else {
+        Set-ItemProperty -Path $RegKeyPath -Name "$('Wifi' + $($wifiNetArray.Indexof($_) + 1) + 'Mac')" -Value "$($_.MacAddress)" # Set Property
+    }
+}
+
+$nicNetArray | ForEach-Object{
+    if($nicNetArray.Length -lt 1){ # Test if Wifi Detected
+        Write-Output 'NO NIC'
+    } else {
+        Set-ItemProperty -Path $RegKeyPath -Name "$('Nic' + $($nicNetArray.Indexof($_) + 1) + 'Mac')" -Value "$($_.MacAddress)" # Set Property
+    }
+}
+
+
+
+
 ###### OS NAME ######
 $OSName = $CompInfo.OsName
 Set-ItemProperty -Path $RegKeyPath -Name "OperatingSystem" -Value "$OSName"
 
 ###### OS BUILD VERSION ######
 $OSBuild = $CompInfo.WindowsVersion #2009, 1909
-Set-ItemProperty -Path $RegKeyPath -Name "BuildVersion" -Value "$OSBuild"
+Set-ItemProperty -Path $RegKeyPath -Name "OSBuildVersion" -Value "$OSBuild"
 
 ###### ASSET TAG ######
 $AssetTag = (Get-CimInstance -ClassName Win32_SystemEnclosure).SMBIOSAssetTag
