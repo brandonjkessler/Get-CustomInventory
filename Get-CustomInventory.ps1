@@ -80,9 +80,9 @@ $MonArray = @()
 
 $GetMonitor | ForEach-Object {
 	New-Object -TypeName psobject -Property @{
-        Manufacturer = ($_.ManufacturerName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
-        Name = ($_.UserFriendlyName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
-        Serial = ($_.SerialNumberID -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
+        Manufacturer = ($_.ManufacturerName -notmatch '^0$' | ForEach-Object {$_}) -join ""
+        Name = ($_.UserFriendlyName -notmatch '^0$' | ForEach-Object {$_}) -join ""
+        Serial = ($_.SerialNumberID -notmatch '^0$' | ForEach-Object {$_}) -join ""
     } | Where-Object {$_.Serial -ne 0} | ForEach-Object{$MonArray += $_}
 }
 
