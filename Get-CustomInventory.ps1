@@ -73,20 +73,24 @@ Keys from previous script:
 ###### MONITOR #######
 ## influenced by http://jeffwouters.nl/index.php/2016/11/powershell-find-the-manufacturer-model-and-serial-for-your-monitors/
 
-
+function Decode {
+    If ($args[0] -is [System.Array]) {
+        [System.Text.Encoding]::ASCII.GetString($args[0])
+    }
+    Else {
+        "Not Found"
+    }
+}
 
 $GetMonitor = Get-CimInstance -Namespace root\wmi -ClassName wmimonitorid 
 $MonArray = @()
 
 $GetMonitor | ForEach-Object {
-    if(($_.UserFriendlyName) -ne $null){
         New-Object -TypeName psobject -Property @{
-            Manufacturer = ($_.ManufacturerName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
-            Name = ($_.UserFriendlyName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
-            Serial = ($_.SerialNumberID -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
-        } | Where-Object {$_.Serial -ne 0} | ForEach-Object{$MonArray += $_}
-    } # End if
-           
+            Manufacturer = Decode $_.ManufacturerName -notmatch '^0$'
+            Name = Decode $_.UserFriendlyName -notmatch '^0$'
+            Serial = Decode $_.SerialNumberID -notmatch '^0$'
+        } | Where-Object {$_.Serial -ne 0} | ForEach-Object{$MonArray += $_}          
 } # End ForEach-Object
 
 $MonArray | ForEach-Object{
