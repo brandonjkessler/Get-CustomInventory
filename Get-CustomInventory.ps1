@@ -88,7 +88,7 @@ $MonArray = @()
 $GetMonitor | ForEach-Object {
         New-Object -TypeName psobject -Property @{
             Manufacturer = Decode $_.ManufacturerName -notmatch '^0$'
-            Name = Decode $_.UserFriendlyName -notmatch '^0$'
+            Model = Decode $_.UserFriendlyName -notmatch '^0$'
             Serial = Decode $_.SerialNumberID -notmatch '^0$'
         } | Where-Object {$_.Serial -ne 0} | ForEach-Object{$MonArray += $_}          
 } # End ForEach-Object
