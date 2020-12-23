@@ -79,12 +79,15 @@ $GetMonitor = Get-CimInstance -Namespace root\wmi -ClassName wmimonitorid
 $MonArray = @()
 
 $GetMonitor | ForEach-Object {
-	New-Object -TypeName psobject -Property @{
-        Manufacturer = ($_.ManufacturerName -notmatch '^0$' | ForEach-Object {$_}) -join ""
-        Name = ($_.UserFriendlyName -notmatch '^0$' | ForEach-Object {$_}) -join ""
-        Serial = ($_.SerialNumberID -notmatch '^0$' | ForEach-Object {$_}) -join ""
-    } | Where-Object {$_.Serial -ne 0} | ForEach-Object{$MonArray += $_}
-}
+    if(($_.UserFriendlyName) -ne $null){
+        New-Object -TypeName psobject -Property @{
+            Manufacturer = ($_.ManufacturerName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
+            Name = ($_.UserFriendlyName -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
+            Serial = ($_.SerialNumberID -notmatch '^0$' | ForEach-Object {[char]$_}) -join ""
+        } | Where-Object {$_.Serial -ne 0} | ForEach-Object{$MonArray += $_}
+    } # End if
+           
+} # End ForEach-Object
 
 $MonArray | ForEach-Object{
     if($MonArray.Length -lt 1){ # Test if monitors attached
