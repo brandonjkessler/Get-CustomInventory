@@ -5,7 +5,7 @@ $RegKeyPath = "HKLM:\SOFTWARE\$RegKey"
 if(!(Test-Path -Path "$RegKeyPath")){
     New-Item -Path "$RegKeyPath"
 }
-
+$Date = Get-Date
 
 
 
@@ -197,3 +197,6 @@ if(($WarrantyEndDate -ne $null) -or ($WarrantyEndDate -ne '')){
     Set-ItemProperty -Path $RegKeyPath -Name "WarrantyEndDate" -Value "Unknown"
 }
 
+
+####### DATE RUN #############
+Set-ItemProperty -Path $RegKeyPath -Name "DateRun" -Value "$Date"
