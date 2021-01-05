@@ -181,6 +181,7 @@ Set-ItemProperty -Path $RegKeyPath -Name "Domain" -Value "$DomainName"
 
 ###### Bitlocker Protection Status (ON/OFF) ######
 $BitlockerStatus = (Get-BitLockerVolume -MountPoint C:).ProtectionStatus
+Set-ItemProperty -Path $RegKeyPath -Name "BitlockerStatus" -Value "$BitlockerStatus"
 
 
 ####### DATE RUN #############
