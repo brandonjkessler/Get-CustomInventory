@@ -7,28 +7,7 @@ if(!(Test-Path -Path "$RegKeyPath")){
 }
 
 
-########## USER ##############
-## TO DO ##
-## Create a way to import CSV with Addresses
-## Import CSV with Department IDs
 
-## TO DO ##
-## Get The Following:
-## Currently Logged on User's info from AD. If unable to, get from User as input
-## Phone Number from User input
-## Address
-## Building
-## Floor
-## Room/Cube
-## Agency from Domain, or have user input if unable to
-## Department
-## Location
-## Primary Device or Multi-User from User Input
-## -If Multi-user machine, don't run on each new logon
-
-
-###### Current User ######
-$CurrentUser = $env:USERNAME
 
 
 ######### HARDWARE ##############
