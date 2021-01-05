@@ -174,14 +174,6 @@ Set-ItemProperty -Path $RegKeyPath -Name "OSBuildVersion" -Value "$OSBuild"
 ###### ASSET TAG ######
 $AssetTag = (Get-CimInstance -ClassName Win32_SystemEnclosure).SMBIOSAssetTag
 Set-ItemProperty -Path $RegKeyPath -Name "AssetTag" -Value "$AssetTag"
-if($AssetTag -match "20[0-9][0-9]-[0-1][0-9]"){ # Check to see if asset tag is set to lease or expiration date. YYYY-mm.
-    $WarrantyEndDate = $AssetTag
-} elseif($AssetTag -match "purchased") {
-    ## TO DO ##
-    ## Get Warranty Date from APIs ##
-} elseif($AssetTag -match "unsupported") {
-    $WarrantyEndDate = $AssetTag
-}
 
 ###### COMPUTER DOMAIN ######
 $DomainName = $CompInfo.CsDomain 
@@ -189,13 +181,6 @@ Set-ItemProperty -Path $RegKeyPath -Name "Domain" -Value "$DomainName"
 
 ###### Bitlocker Protection Status (ON/OFF) ######
 $BitlockerStatus = (Get-BitLockerVolume -MountPoint C:).ProtectionStatus
-
-###### WARRANTY END DATE ########
-if(($WarrantyEndDate -ne $null) -or ($WarrantyEndDate -ne '')){
-    Set-ItemProperty -Path $RegKeyPath -Name "WarrantyEndDate" -Value "$WarrantyEndDate"
-} else {
-    Set-ItemProperty -Path $RegKeyPath -Name "WarrantyEndDate" -Value "Unknown"
-}
 
 
 ####### DATE RUN #############
