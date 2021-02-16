@@ -1,7 +1,49 @@
+<#
+    .SYNOPSIS
+    Gathers computer information and writes to registry keys.
+
+    .DESCRIPTION
+    Gathers information on the computer and writes it to the registry.  
+    This includes information on some peripherals attached.
+
+    .PARAMETER RegistryKeyPath
+    Path for the registry key location. Default is 'HKLM:\SOFTWARE'
+
+    .PARAMETER RegistryKey
+    Custom Registry Key. Default is 'CustomInv'
+    
+
+    .INPUTS
+    None.
+
+    .OUTPUTS
+    None.
+
+    .EXAMPLE
+    Get-CustomInventory
+
+    .EXAMPLE
+    Get-CustomInventory -RegistryKeyPath 'HKLM:\SOFTWARE' -RegistryKey 'OrgName'
+
+    .LINK
+    
+#>
+
+
+param(
+    [Parameter(HelpMessage='Path where you want to put a custom registry key.')]
+    [String]
+    $RegistryKeyPath = 'HKLM:\SOFTWARE',
+    [Parameter(HelpMessage='Custom registry key to hold all the information.')]
+    [String]
+    $RegistryKey = 'CustomInv'
+)
+
+
+
 ###### VARIABLE DECLARATION #######
 $WarrantyEndDate = ''
-$RegKey = 'CustomInv'
-$RegKeyPath = "HKLM:\SOFTWARE\$RegKey"
+$RegKeyPath = "$RegistryKeyPath\$RegistryKey"
 if(!(Test-Path -Path "$RegKeyPath")){
     New-Item -Path "$RegKeyPath"
 }
@@ -12,41 +54,6 @@ $Date = Get-Date
 
 ######### HARDWARE ##############
 $CompInfo = Get-ComputerInfo
-
-## TO DO ##
-## Get The Following:
-
-## Dock Serial Number
-## Install Date (Display to EU)
-## Asset Status (Display to EU)
-## Schedule Number (For Leased Assets)
-
-######### COMMENTS ###########
-## Present to User, if all information is correct, do nothing
-## User can select "Make Changes" and update any information
-
-## Write to HKLM:\SOFTWARE\CustomInv
-
-
-<#
-Keys from previous script:
-
-"ManufacturerTag"
-"InstallDate"
-"LocationCode"
-"PhysicalAddress"
-"AssignedUser"
-"VendorName"
-"VendorEmail"
-"VendorPhone"
-"Agency"
-"Department"
-"Status"
-"SDTicket"
-"Revision"
-"Phone"
-
-#>
 
 
 ###### MONITOR #######
