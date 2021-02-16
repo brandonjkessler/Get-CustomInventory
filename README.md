@@ -13,9 +13,9 @@ While you can pull this data from other sources, this allows us to pull our data
 
 ## PARAMETERS
 * RegistryKeyPath
- * Path for the registry key location. Default is 'HKLM:\SOFTWARE'
+  * Path for the registry key location. Default is 'HKLM:\SOFTWARE'
 * RegistryKey
- * Custom Registry Key. Default is 'CustomInv'
+  * Custom Registry Key. Default is 'CustomInv'
 
 ## EXAMPLES
     Get-CustomInventory
