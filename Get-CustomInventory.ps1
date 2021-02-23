@@ -31,10 +31,10 @@
 
 
 param(
-    [Parameter(HelpMessage='Path where you want to put a custom registry key.')]
+    [Parameter(ValueFromPipelineByPropertyName,HelpMessage='Path where you want to put a custom registry key.')]
     [String]
-    $RegistryKeyPath = 'HKLM:\SOFTWARE',
-    [Parameter(HelpMessage='Custom registry key to hold all the information.')]
+    $RegistryPath = 'HKLM:\SOFTWARE',
+    [Parameter(ValueFromPipelineByPropertyName,HelpMessage='Custom registry key to hold all the information.')]
     [String]
     $RegistryKey = 'CustomInv'
 )
@@ -43,7 +43,7 @@ param(
 
 ###### VARIABLE DECLARATION #######
 $WarrantyEndDate = ''
-$RegKeyPath = "$RegistryKeyPath\$RegistryKey"
+$RegKeyPath = "$RegistryPath\$RegistryKey"
 if(!(Test-Path -Path "$RegKeyPath")){
     New-Item -Path "$RegKeyPath"
 }
