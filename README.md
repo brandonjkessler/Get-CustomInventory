@@ -12,7 +12,7 @@ This includes information on some peripherals attached.
 While you can pull this data from other sources, this allows us to pull our data from one source.
 
 ## PARAMETERS
-* RegistryKeyPath
+* RegistryPath
   * Path for the registry key location. Default is 'HKLM:\SOFTWARE'
 * RegistryKey
   * Custom Registry Key. Default is 'CustomInv'
