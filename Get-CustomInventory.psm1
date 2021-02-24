@@ -186,6 +186,11 @@ Set-ItemProperty -Path $RegKeyPath -Name "AssetTag" -Value "$AssetTag"
 $DomainName = $CompInfo.CsDomain 
 Set-ItemProperty -Path $RegKeyPath -Name "Domain" -Value "$DomainName"
 
+###### CURRENT OU #######
+$ADPath = ((([adsisearcher]"(&(objectCategory=Computer)(name=$env:COMPUTERNAME))").findall()).properties).distinguishedname
+Set-ItemProperty -Path $RegKeyPath -Name 'ADPath' -Value "$ADPath"
+
+
 ###### Bitlocker Protection Status (ON/OFF) ######
 $BitlockerStatus = (Get-BitLockerVolume -MountPoint C:).ProtectionStatus
 Set-ItemProperty -Path $RegKeyPath -Name "BitlockerStatus" -Value "$BitlockerStatus"
